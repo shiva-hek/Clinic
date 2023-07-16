@@ -36,16 +36,18 @@ public class AppointmentFactory
     }
 
     public Appointment Create(
+        Guid id,
         DateTime startTime,
         TimeSpan duration,
         Guid doctorId,
         Guid patientId,
-        Guid visitingRoomId
+        Guid visitingRoomId = default
     )
     {
         var appoitmentTime = new AppointmentTime(startTime, duration);
 
         return new Appointment(
+            id,
             appoitmentTime,
             doctorId,
             patientId,

@@ -1,7 +1,10 @@
 ﻿namespace Domain.Models.Appointments.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public IAppointmentRepository AppointmentRepository { get; }
+        
+        Task CommitAsync(CancellationToken cancellationToken = default);
+        ValueTask RollBackAsync(CancellationToken cancellationToken = default);
     }
 }

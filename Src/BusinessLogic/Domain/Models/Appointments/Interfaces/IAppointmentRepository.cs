@@ -11,8 +11,8 @@ public interface IAppointmentRepository : IRepository
     Appointment GetByDoctorId(AppointmentTime appointmentTime, Guid doctorId);
     Appointment GetByRoomId(AppointmentTime appointmentTime, Guid roomId);
     Appointment GetByPatientId(AppointmentTime appointmentTime, Guid patientId);
-    List<Appointment> GetconflictingAppointments(AppointmentTime appointmentTime);
+    List<Appointment> GetConflictingAppointments(AppointmentTime appointmentTime);
     int Count(Guid patientId, DateTime startTime);
-    Task InsertAsync(Appointment appointment);
-    Task<DateTime> GetfirstFreeTime(Guid doctorId, Guid patientId, TimeSpan duration);
+    Task InsertAsync(Appointment appointment, CancellationToken cancellationToken = default);
+    Task<DateTime> GetFirstDoctorFreeTime(Guid doctorId, TimeSpan duration, CancellationToken cancellationToken = default);
 }

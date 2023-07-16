@@ -7,10 +7,11 @@ namespace Domain.Models.Appointments.Entities
 {
     public class Appointment : BaseEntity, IAggregateRoot
     {
+        public static readonly Guid DefaultRoomId = new Guid("00000000-0000-0000-0000-000000000000");
         public AppointmentTime AppointmentTime { get; private set; }
         public Guid DoctorId { get; private set; }
         public Guid PatientId { get; private set; }
-        public Guid VisitingRoomId { get; set; }
+        public Guid VisitingRoomId { get; set; } = DefaultRoomId;
 
         [Obsolete("Reserved for EF Core", true)]
         private Appointment()
@@ -18,6 +19,7 @@ namespace Domain.Models.Appointments.Entities
         }
 
         public Appointment(
+            Guid id,
             AppointmentTime appointmentTime,
             Guid doctorId,
             Guid patientId,
@@ -55,7 +57,7 @@ namespace Domain.Models.Appointments.Entities
                 new AppointmetMustNotOverlapRule(appointmentTime, appointmentOverlapChecker));
 
 
-            Id = Guid.NewGuid();
+            Id = id;
             AppointmentTime = appointmentTime;
             DoctorId = doctorId;
             PatientId = patientId;
@@ -141,15 +143,20 @@ namespace Domain.Models.Appointments.Entities
             PatientId = patientId;
         }
 
-        public void ChangeVisitingRoom(DateTime startTime, TimeSpan duration, Guid visitingRoomId)
+        public void ChangeVisitingRoom(
+            DateTime startTime,
+            TimeSpan duration,
+            Guid visitingRoomId,
+            IRoomAvailabilityChecker roomAvailabilityChecker)
         {
             var appointmentTime = new AppointmentTime(startTime, duration);
-
-            //Rules
-
-            if (visitingRoomId == visitingRoomId)
+            
+            if (visitingRoomId == VisitingRoomId)
                 return;
 
+            AssertionConcern.AssertRuleNotBroken(new RoomMustBeAvailableRule(appointmentTime, visitingRoomId,
+                roomAvailabilityChecker));
+            
             VisitingRoomId = visitingRoomId;
         }
     }
