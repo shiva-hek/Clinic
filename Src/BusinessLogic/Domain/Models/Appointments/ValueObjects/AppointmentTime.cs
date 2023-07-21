@@ -1,6 +1,7 @@
 ﻿
 
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.ValueObjects
 {
@@ -8,7 +9,14 @@ namespace Domain.Models.Appointments.ValueObjects
     {
         public DateTime StartTime { get; private set; }
         public TimeSpan Duration { get; private set; }
-        public DateTime EndTime => StartTime + Duration;
+        public DateTime EndTime
+        {
+            get
+            {
+                return StartTime + Duration;
+            }
+            private set { }
+        }
 
         [Obsolete("Reserved for EF Core", true)]
         private AppointmentTime()
@@ -18,8 +26,8 @@ namespace Domain.Models.Appointments.ValueObjects
 
         public AppointmentTime(DateTime startTime, TimeSpan duration)
         {
-            AssertionConcern.AssertArgumentIsTrue(StartTime > DateTime.Now, $"The {nameof(StartTime)} must be less than current date.");
-            AssertionConcern.AssertArgumentIsTrue(duration.TotalMinutes > 0, "Duration must be greater than zero.");
+            AssertionConcern.AssertArgumentIsTrue(startTime > DateTime.Now, ErrorCode.StartTimeValidation);
+            AssertionConcern.AssertArgumentIsTrue(duration.TotalMinutes > 0, ErrorCode.DurationValidation);
 
             StartTime = startTime;
             Duration = duration;

@@ -14,7 +14,7 @@ namespace Domain.Services.Appointments
         
         public bool IsValid(Guid patientId, AppointmentTime appointmentTime)
         {
-            return _appointmentRepository.GetByRoomId(appointmentTime, patientId) == null;
+            return _appointmentRepository.GetConflictingAppointmentByPatientId(appointmentTime, patientId) == null;
         }
     }
 }

@@ -4,15 +4,21 @@ using Shared.Domain;
 
 namespace Domain.Models.Appointments.Interfaces;
 
-public interface IAppointmentRepository : IRepository
+public interface IAppointmentRepository : IRepository<Appointment>
 {
-    Appointment Get(Guid id);
 
-    Appointment GetByDoctorId(AppointmentTime appointmentTime, Guid doctorId);
-    Appointment GetByRoomId(AppointmentTime appointmentTime, Guid roomId);
-    Appointment GetByPatientId(AppointmentTime appointmentTime, Guid patientId);
-    List<Appointment> GetConflictingAppointments(AppointmentTime appointmentTime);
+    Appointment? GetConflictingAppointmentByDoctorId(AppointmentTime appointmentTime, Guid doctorId);
+
+    Appointment? GetConflictingAppointmentByRoomId(AppointmentTime appointmentTime, Guid roomId);
+
+    List<Appointment>? GetConflictingAppointments(AppointmentTime appointmentTime);
+
+    Appointment? GetConflictingAppointmentByPatientId(AppointmentTime appointmentTime, Guid patientId);
+
     int Count(Guid patientId, DateTime startTime);
+
     Task InsertAsync(Appointment appointment, CancellationToken cancellationToken = default);
-    Task<DateTime> GetFirstDoctorFreeTime(Guid doctorId, TimeSpan duration, CancellationToken cancellationToken = default);
+
+    Task<DateTime> GetFirstDoctorFreeTime(Guid doctorId, Guid patientId, TimeSpan duration,
+        List<WeeklyAvailability> doctorWeeklyAvailabilities, CancellationToken cancellationToken = default);
 }

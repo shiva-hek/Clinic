@@ -10,8 +10,9 @@ namespace Domain.Models.Appointments.Entities
     {
         public Name Name { get; private set; }
         public DoctorType DoctorType { get; private set; }
-        public WeeklySchedule WeeklySchedule { get; private set; }
         public EmailAddress EmailAddress { get; private set; }
+        public List<WeeklyAvailability> Availabilities { get; private set; }
+
         public virtual ICollection<Appointment> Appointments { get; private set; } = new List<Appointment>();
 
 
@@ -24,22 +25,17 @@ namespace Domain.Models.Appointments.Entities
             Guid id,
             Name name,
             DoctorType doctorType,
-            WeeklySchedule weeklySchedul,
+            List<WeeklyAvailability> availabilities ,
             EmailAddress emailAddress,
             IDoctorEmailAddressUniquenessChecker emailAddressUniquenessChecker)
         {
-            AssertionConcern.AssertArgumentNotNull(Id, $"The {nameof(Id)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(name, $"The {nameof(name)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(doctorType, $"The {nameof(doctorType)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(weeklySchedul, $"The {nameof(weeklySchedul)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(emailAddress, $"The {nameof(emailAddress)} must be provided.");
             AssertionConcern.AssertRuleNotBroken(
                 new EmailAddressMustBeUniqueRule(emailAddress, emailAddressUniquenessChecker));
 
             Id = id;
             Name = name;
             DoctorType = doctorType;
-            WeeklySchedule = weeklySchedul;
+            Availabilities = availabilities;
             EmailAddress = emailAddress;
         }
     }

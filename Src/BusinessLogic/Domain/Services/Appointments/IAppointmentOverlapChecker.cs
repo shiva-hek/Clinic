@@ -1,9 +1,8 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
-using Shared.Domain;
 
 namespace Domain.Services.Appointments
 {
-    public interface IAppointmentOverlapChecker : IDomainService
+    public interface IAppointmentOverlapChecker
     {
         bool HasNoConflict(AppointmentTime appointmentTime);
     }

@@ -14,10 +14,10 @@ namespace Domain.Services.Appointments
 
         public bool IsValid(DateTime startTime, DateTime endTime, Guid doctorId)
         {
-            Doctor doctor = _doctorRepository.Get(doctorId);
+            Doctor? doctor = _doctorRepository.Get(doctorId);
             DayOfWeek dayOfWeek = startTime.DayOfWeek;
-            WeeklyAvailability? availability =
-                doctor.WeeklySchedule.Availabilities.FirstOrDefault(a => a.Day == dayOfWeek);
+
+            WeeklyAvailability? availability =doctor!.Availabilities.FirstOrDefault(a => a.Day == dayOfWeek);
 
             if (availability != null)
             {

@@ -1,4 +1,5 @@
 ﻿using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.ValueObjects
 {
@@ -16,10 +17,10 @@ namespace Domain.Models.Appointments.ValueObjects
 
         public Name(string firstName, string lastName)
         {
-            AssertionConcern.AssertArgumentNotEmpty(firstName, $"The {nameof(firstName)} must be provided.");
-            AssertionConcern.AssertArgumentNotEmpty(lastName, $"The {nameof(lastName)} must be provided.");
-            AssertionConcern.AssertArgumentLength(firstName, 20, $"The {nameof(firstName)} length must be 20 characters or less.");
-            AssertionConcern.AssertArgumentLength(lastName, 30, $"The {nameof(lastName)} length must be 30 characters or less.");
+            AssertionConcern.AssertArgumentNotEmpty(firstName, ErrorCode.IsEmpty(nameof(firstName)));
+            AssertionConcern.AssertArgumentNotEmpty(lastName, ErrorCode.IsEmpty(nameof(lastName)));
+            AssertionConcern.AssertArgumentLength(firstName, 20, ErrorCode.FirstnameLength);
+            AssertionConcern.AssertArgumentLength(lastName, 30, ErrorCode.LastnameLength);
 
             Lastname = lastName.Trim().ToLower();
             Firstname = firstName.Trim().ToLower();

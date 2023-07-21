@@ -1,8 +1,6 @@
-﻿using Shared.Domain;
-
-namespace Domain.Services.Appointments
+﻿namespace Domain.Services.Appointments
 {
-    public interface IAppointmentNumberChecker : IDomainService
+    public interface IAppointmentNumberChecker
     {
         bool IsLessThanTwo(Guid patientId, DateTime startTime);
     }

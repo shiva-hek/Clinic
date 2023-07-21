@@ -41,7 +41,7 @@ public class AppointmentFactory
         TimeSpan duration,
         Guid doctorId,
         Guid patientId,
-        Guid visitingRoomId = default
+        Guid? visitingRoomId = null
     )
     {
         var appoitmentTime = new AppointmentTime(startTime, duration);

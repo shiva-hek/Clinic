@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
 using Domain.Services.Appointments;
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.Rules;
 
@@ -17,10 +18,10 @@ public class DoctorMustBeAvailableRule : IRule
         IDoctorAvailabilityChecker doctorAvailabilityChecker
     )
     {
-        AssertionConcern.AssertArgumentNotNull(appointmentTime, $"The {nameof(appointmentTime)} must be provided.");
+        AssertionConcern.AssertArgumentNotNull(appointmentTime, ErrorCode.IsNull(nameof(appointmentTime)));
         AssertionConcern.AssertArgumentNotNull(doctorAvailabilityChecker,
-            $"The {nameof(doctorAvailabilityChecker)} must be provided.");
-        AssertionConcern.AssertArgumentNotNull(doctorId, $"The {nameof(doctorId)} must be provided.");
+            ErrorCode.IsNull(nameof(doctorAvailabilityChecker)));
+        AssertionConcern.AssertArgumentNotNull(doctorId, ErrorCode.IsNull(nameof(doctorId)));
 
         this._appointmentTime = appointmentTime;
         this._doctorId = doctorId;
@@ -29,12 +30,12 @@ public class DoctorMustBeAvailableRule : IRule
 
     public void Assert()
     {
-        Assert($@"The doctor is scheduled for another appointment.");
+        Assert(ErrorCode.DoctorIsBusy);
     }
 
-    public void Assert(string message)
+    public void Assert(ErrorCode error)
     {
         if (!_doctorAvailabilityChecker.IsAvailable(_appointmentTime, _doctorId))
-            throw new BusinessRuleViolationException(message ?? "");
+            throw new ApiException(error);
     }
 }

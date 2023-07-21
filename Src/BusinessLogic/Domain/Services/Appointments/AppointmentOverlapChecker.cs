@@ -14,7 +14,7 @@ namespace Domain.Services.Appointments
         
         public bool HasNoConflict(AppointmentTime appointmentTime)
         {
-            return _appointmentRepository.GetConflictingAppointments(appointmentTime).Count == 0;
+            return _appointmentRepository.GetConflictingAppointments(appointmentTime)!.Count == 0;
         }
     }
 }

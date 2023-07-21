@@ -4,8 +4,7 @@ using Shared.Domain;
 
 namespace Domain.Models.Appointments.Interfaces;
 
-public interface IPatientRepository : IRepository
+public interface IPatientRepository : IRepository<Patient>
 {
-    Patient Get(Guid id);
-    Patient Get(EmailAddress emailAddress);
+    Patient? Get(EmailAddress emailAddress);
 }

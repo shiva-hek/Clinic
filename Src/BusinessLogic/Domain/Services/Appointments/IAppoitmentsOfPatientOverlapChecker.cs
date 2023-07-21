@@ -1,9 +1,8 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
-using Shared.Domain;
 
 namespace Domain.Services.Appointments
 {
-    public interface IAppoitmentsOfPatientOverlapChecker : IDomainService
+    public interface IAppoitmentsOfPatientOverlapChecker
     {
         bool IsValid(Guid patientId, AppointmentTime appointmentTime);
     }

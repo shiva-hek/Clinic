@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
 using Domain.Services.Appointments;
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.Rules
 {
@@ -15,10 +16,9 @@ namespace Domain.Models.Appointments.Rules
             AppointmentTime appointmentTime,
             IAppointmentNumberChecker appointmentNumberChecker)
         {
-            AssertionConcern.AssertArgumentNotNull(patientId, $"The {nameof(patientId)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(appointmentTime, $"The {nameof(appointmentTime)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(appointmentNumberChecker,
-                $"The {nameof(appointmentNumberChecker)} must be provided.");
+            AssertionConcern.AssertArgumentNotNull(patientId, ErrorCode.IsNull(nameof(patientId)));
+            AssertionConcern.AssertArgumentNotNull(appointmentTime, ErrorCode.IsEmpty(nameof(appointmentTime)));
+            AssertionConcern.AssertArgumentNotNull(appointmentNumberChecker,ErrorCode.IsEmpty(nameof(appointmentNumberChecker)));
 
             this._patientId = patientId;
             this._appointmentTime = appointmentTime;
@@ -27,14 +27,13 @@ namespace Domain.Models.Appointments.Rules
 
         public void Assert()
         {
-            Assert(
-                $@"The patient can not have more appointments for this day.");
+            Assert(ErrorCode.NumberOfPatientAppointments);
         }
 
-        public void Assert(string message)
+        public void Assert(ErrorCode errorCode)
         {
             if (!_appointmentNumberChecker.IsLessThanTwo(_patientId, _appointmentTime.StartTime))
-                throw new BusinessRuleViolationException(message ?? "");
+                throw new ApiException(errorCode);
         }
     }
 }

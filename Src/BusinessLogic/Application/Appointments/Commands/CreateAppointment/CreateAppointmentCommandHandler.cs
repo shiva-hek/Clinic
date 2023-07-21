@@ -4,41 +4,36 @@ using Domain.Models.Appointments.Factories;
 using Domain.Models.Appointments.Interfaces;
 using MediatR;
 
-namespace Application.Appointments.Commands.BookEarliestAppointment;
+namespace Application.Appointments.Commands.CreateAppointment;
 
-public class BookEarliestAppointmentCommandHandler : IRequestHandler<BookEarliestAppointmentRequest>
+public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentRequest>
 {
     private readonly IIdService _idService;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly AppointmentFactory _appointmentFactory;
 
-    public BookEarliestAppointmentCommandHandler(
+    public CreateAppointmentCommandHandler(
         IIdService idService,
-        IUnitOfWork unitOfWork,
         IAppointmentRepository appointmentRepository,
         AppointmentFactory appointmentFactory
     )
     {
         _idService = idService;
-        _unitOfWork = unitOfWork;
         _appointmentRepository = appointmentRepository;
         _appointmentFactory = appointmentFactory;
     }
 
-    public async Task Handle(BookEarliestAppointmentRequest request, CancellationToken cancellationToken)
+    public async Task Handle(CreateAppointmentRequest request, CancellationToken cancellationToken)
     {
-        DateTime firsDoctorFreeTime =
-            await _unitOfWork.AppointmentRepository.GetFirstDoctorFreeTime(request.DoctorId, request.Duration, cancellationToken);
+        TimeSpan duration = TimeSpan.FromMinutes(request.DurationInMinutes);
 
         Appointment appointment = _appointmentFactory.Create(
             id: _idService.GenerateNewId(),
-            startTime: firsDoctorFreeTime,
-            duration: request.Duration,
+            startTime: request.StartTime,
+            duration: duration,
             doctorId: request.DoctorId,
             patientId: request.PatientId);
 
         await _appointmentRepository.InsertAsync(appointment, cancellationToken);
-        await _unitOfWork.CommitAsync(cancellationToken);
     }
 }

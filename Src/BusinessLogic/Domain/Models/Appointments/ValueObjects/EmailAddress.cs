@@ -1,4 +1,5 @@
 ﻿using Shared.Domain;
+using Shared.Exceptions;
 using Shared.Tools;
 
 namespace Domain.Models.Appointments.ValueObjects;
@@ -13,11 +14,9 @@ public class EmailAddress : ValueObject<EmailAddress>
 
     public EmailAddress(string emailAddress)
     {
-        AssertionConcern.AssertArgumentNotEmpty(emailAddress, $"The {nameof(emailAddress)} must be provided.");
-        AssertionConcern.AssertArgumentLength(emailAddress, 50,
-            $"The {nameof(emailAddress)} length must be 50 characters or less.");
-        AssertionConcern.AssertArgumentMatches(emailAddress.ToLower(), RegExHelper.Patterns.Email,
-            $"The {nameof(emailAddress)} format is invalid.");
+        AssertionConcern.AssertArgumentNotEmpty(emailAddress, ErrorCode.IsNull(nameof(emailAddress)));
+        AssertionConcern.AssertArgumentLength(emailAddress, 50,ErrorCode.EmailLength);
+        AssertionConcern.AssertArgumentMatches(emailAddress.ToLower(), RegExHelper.Patterns.Email,ErrorCode.InvalidEmail);
 
         Value = emailAddress.Trim().ToLower();
     }

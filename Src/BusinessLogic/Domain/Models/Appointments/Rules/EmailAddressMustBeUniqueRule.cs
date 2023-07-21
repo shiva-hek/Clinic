@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
 using Domain.Services.Appointments;
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.Rules;
 
@@ -11,20 +12,19 @@ public class EmailAddressMustBeUniqueRule : IRule
 
     public EmailAddressMustBeUniqueRule(EmailAddress emailAddress, IDoctorEmailAddressUniquenessChecker emailAddressUniquenessChecker)
     {
-        AssertionConcern.AssertArgumentNotNull(emailAddress, $"The {nameof(emailAddress)} must be provided.");
-        AssertionConcern.AssertArgumentNotNull(emailAddressUniquenessChecker, $"The {nameof(emailAddressUniquenessChecker)} must be provided.");
+        AssertionConcern.AssertArgumentNotNull(emailAddress, ErrorCode.IsNull(nameof(emailAddress)));
 
         this._emailAddress = emailAddress;
         this._emailAddressUniquenessChecker = emailAddressUniquenessChecker;
     }
     public void Assert()
     {
-        Assert($@"The email address ""{_emailAddress.Value}"" is using by someone else.");
+        Assert(ErrorCode.DoctorDuplicateEmail);
     }
 
-    public void Assert(string message)
+    public void Assert(ErrorCode errorCode)
     {
         if (!_emailAddressUniquenessChecker.IsUnique(_emailAddress))
-            throw new BusinessRuleViolationException(message ?? "");
+            throw new ApiException(errorCode);
     }
 }

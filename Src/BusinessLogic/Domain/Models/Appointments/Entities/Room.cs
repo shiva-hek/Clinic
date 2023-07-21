@@ -2,16 +2,16 @@
 
 namespace Domain.Models.Appointments.Entities;
 
-public class VisitingRoom : BaseEntity
+public class Room : BaseEntity
 {
     public string Title { get; private set; }
 
     [Obsolete("Reserved for EF Core", true)]
-    private VisitingRoom()
+    private Room()
     {
     }
 
-    public VisitingRoom(
+    public Room(
         Guid id,
         string title)
     {

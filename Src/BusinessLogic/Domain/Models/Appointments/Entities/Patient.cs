@@ -22,12 +22,10 @@ namespace Domain.Models.Appointments.Entities
             Name name,
             Gender gender,
             EmailAddress emailAddress,
-            IDoctorEmailAddressUniquenessChecker emailAddressUniquenessChecker)
+            IPatientEmailAddressUniquenessChecker emailAddressUniquenessChecker)
         {
-            AssertionConcern.AssertArgumentNotNull(Id, $"The {nameof(Id)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(name, $"The {nameof(name)} must be provided.");
             AssertionConcern.AssertRuleNotBroken(
-                new EmailAddressMustBeUniqueRule(emailAddress, emailAddressUniquenessChecker));
+                new PatientEmailAddressMustBeUniqueRule(emailAddress, emailAddressUniquenessChecker));
 
             Id = id;
             Name = name;

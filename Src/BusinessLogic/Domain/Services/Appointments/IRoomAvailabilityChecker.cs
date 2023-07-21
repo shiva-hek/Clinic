@@ -1,9 +1,8 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
-using Shared.Domain;
 
 namespace Domain.Services.Appointments;
 
-public interface IRoomAvailabilityChecker : IDomainService
+public interface IRoomAvailabilityChecker
 {
     bool IsAvailable(AppointmentTime appointmentTime, Guid roomId);
 }

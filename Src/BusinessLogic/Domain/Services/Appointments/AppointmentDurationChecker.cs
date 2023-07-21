@@ -16,10 +16,10 @@ namespace Domain.Services.Appointments
 
         public bool IsValid(Guid doctorId, AppointmentTime appointmentTime)
         {
-            Doctor doctor = _doctorRepository.Get(doctorId);
+            Doctor? doctor = _doctorRepository.Get(doctorId);
             TimeSpan expectedDuration = TimeSpan.FromMinutes(appointmentTime.Duration.Minutes);
 
-            if (doctor.DoctorType == DoctorType.General)
+            if (doctor!.DoctorType == DoctorType.General)
             {
                 if (expectedDuration < TimeSpan.FromMinutes(5) || expectedDuration > TimeSpan.FromMinutes(15))
                 {

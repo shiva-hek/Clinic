@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
 using Domain.Services.Appointments;
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.Rules
 {
@@ -12,9 +13,9 @@ namespace Domain.Models.Appointments.Rules
 
         public AppointmentDurationMustBeValidRule(AppointmentTime appointmentTime, Guid doctorId, IAppointmentDurationChecker appointmentDurationCheck)
         {
-            AssertionConcern.AssertArgumentNotNull(appointmentTime, $"The {nameof(appointmentTime)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(doctorId, $"The {nameof(doctorId)} must be provided.");
-            AssertionConcern.AssertArgumentNotNull(appointmentDurationCheck, $"The {nameof(appointmentDurationCheck)} must be provided.");
+            AssertionConcern.AssertArgumentNotNull(appointmentTime, ErrorCode.IsNull(nameof(appointmentTime)));
+            AssertionConcern.AssertArgumentNotNull(doctorId, ErrorCode.IsNull(nameof(doctorId)));
+            AssertionConcern.AssertArgumentNotNull(appointmentDurationCheck, ErrorCode.IsNull(nameof(appointmentDurationCheck)));
 
             this._appointmentTime = appointmentTime;
             this._doctorId = doctorId;
@@ -23,13 +24,13 @@ namespace Domain.Models.Appointments.Rules
 
         public void Assert()
         {
-            Assert($@"The appointment duration with this doctor is not valid.");
+            Assert(ErrorCode.InvalidDurationWithDoctorType);
         }
 
-        public void Assert(string message)
+        public void Assert(ErrorCode errorCode)
         {
             if (!_appointmentDurationCheck.IsValid(_doctorId, _appointmentTime))
-                throw new BusinessRuleViolationException(message ?? "");
+                throw new ApiException(errorCode);
         }
     }
 }

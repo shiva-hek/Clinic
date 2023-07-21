@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Appointments.ValueObjects;
 using Domain.Services.Appointments;
 using Shared.Domain;
+using Shared.Exceptions;
 
 namespace Domain.Models.Appointments.Rules;
 
@@ -14,9 +15,8 @@ public class AppointmetMustNotOverlapRule : IRule
         IAppointmentOverlapChecker appointmentOverlapChecker
     )
     {
-        AssertionConcern.AssertArgumentNotNull(appointmentTime, $"The {nameof(appointmentTime)} must be provided.");
-        AssertionConcern.AssertArgumentNotNull(appointmentOverlapChecker,
-            $"The {nameof(appointmentOverlapChecker)} must be provided.");
+        AssertionConcern.AssertArgumentNotNull(appointmentTime, ErrorCode.IsNull(nameof(appointmentTime)));
+        AssertionConcern.AssertArgumentNotNull(appointmentOverlapChecker, ErrorCode.IsNull(nameof(appointmentOverlapChecker)));
 
         this._appointmentTime = appointmentTime;
         this._appointmentOverlapChecker = appointmentOverlapChecker;
@@ -24,13 +24,12 @@ public class AppointmetMustNotOverlapRule : IRule
 
     public void Assert()
     {
-        Assert(
-            $@"There is a conflicting appointment with this one.");
+        Assert(ErrorCode.Overlap);
     }
 
-    public void Assert(string message)
+    public void Assert(ErrorCode errorCode)
     {
         if (!_appointmentOverlapChecker.HasNoConflict(_appointmentTime))
-            throw new BusinessRuleViolationException(message ?? "");
+            throw new ApiException(errorCode);
     }
 }

@@ -15,6 +15,6 @@ public class DoctorAvailabilityChecker: IDoctorAvailabilityChecker
     public bool IsAvailable(AppointmentTime appointmentTime, Guid doctorId)
     {
         // Check if the doctor has not another appointment in the selected time
-        return _appointmentRepository.GetByDoctorId(appointmentTime, doctorId) == null;
+        return _appointmentRepository.GetConflictingAppointmentByDoctorId(appointmentTime, doctorId) == null;
     }
 }

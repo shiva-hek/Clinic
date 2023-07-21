@@ -1,8 +1,6 @@
-﻿using Shared.Domain;
-
-namespace Domain.Services.Appointments
+﻿namespace Domain.Services.Appointments
 {
-    public interface IClinicTimeChecker : IDomainService
+    public interface IClinicTimeChecker
     {
         bool IsValid(DateTime startDate, DateTime endDate);
     }

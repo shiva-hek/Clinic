@@ -1,73 +1,74 @@
-﻿using System.Text.RegularExpressions;
+﻿using Shared.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace Shared.Domain
 {
     public class AssertionConcern
     {
-        public static void AssertArgumentNotNull(object objValue, string message = null)
+        public static void AssertArgumentNotNull(object objValue, ErrorCode errorCode)
         {
             if (objValue is null)
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertArgumentNotEmpty(string stringValue, string message = null)
+        public static void AssertArgumentNotEmpty(string stringValue, ErrorCode errorCode)
         {
             if (string.IsNullOrWhiteSpace(stringValue))
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertArgumentIsTrue<TArgument>(TArgument value, Predicate<TArgument> predicate, string message = null)
+        public static void AssertArgumentIsTrue<TArgument>(TArgument value, Predicate<TArgument> predicate, ErrorCode errorCode)
         {
             if (predicate(value))
                 return;
 
-            ThrowException(message);
+            ThrowException(errorCode);
         }
 
-        public static void AssertArgumentIsTrue(bool booleanValue, string message = null)
+        public static void AssertArgumentIsTrue(bool booleanValue, ErrorCode errorCode)
         {
-            AssertArgumentIsTrue(booleanValue, p => booleanValue, message);
+            AssertArgumentIsTrue(booleanValue, p => booleanValue, errorCode);
         }
 
-        public static void AssertArgumentLength(string stringValue, int maximum, string message = null)
+        public static void AssertArgumentLength(string stringValue, int maximum, ErrorCode errorCode)
         {
             if (string.IsNullOrWhiteSpace(stringValue))
                 return;
 
             int len = stringValue.Trim().Length;
             if (len > maximum)
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertArgumentLength(string stringValue, int minimum, int maximum, string message = null)
+        public static void AssertArgumentLength(string stringValue, int minimum, int maximum, ErrorCode errorCode)
         {
             if (string.IsNullOrWhiteSpace(stringValue))
                 return;
 
             int len = stringValue.Trim().Length;
             if (len < minimum || len > maximum)
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertArgumentMatches(string stringValue, string pattern, string message = null)
+        public static void AssertArgumentMatches(string stringValue, string pattern, ErrorCode errorCode)
         {
             if (string.IsNullOrWhiteSpace(stringValue))
                 return;
 
             var regex = new Regex(pattern);
             if (!regex.IsMatch(stringValue.Trim()))
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertArgumentRange(int value, int minimum, int maximum, string message = null)
+        public static void AssertArgumentRange(int value, int minimum, int maximum, ErrorCode errorCode)
         {
             if (value < minimum || value > maximum)
-                ThrowException(message);
+                ThrowException(errorCode);
         }
 
-        public static void AssertRuleNotBroken(IRule businessRule, string message)
+        public static void AssertRuleNotBroken(IRule businessRule, ErrorCode errorCode)
         {
-            businessRule.Assert(message);
+            businessRule.Assert(errorCode);
         }
 
         public static void AssertRuleNotBroken(IRule businessRule)
@@ -75,12 +76,17 @@ namespace Shared.Domain
             businessRule.Assert();
         }
 
-        private static void ThrowException(string message)
+        private static void ThrowException(ErrorCode errorCode)
         {
-            if (string.IsNullOrWhiteSpace(message))
-                throw new InvalidOperationException();
+            if (errorCode is null)
+                throw new ApiException();
             else
-                throw new InvalidOperationException(message);
+                throw new ApiException(errorCode);
+
+            //if (string.IsNullOrWhiteSpace(errorCode))
+            //    throw new InvalidOperationException();
+            //else
+            //    throw new InvalidOperationException(errorCode);
         }
     }
 }

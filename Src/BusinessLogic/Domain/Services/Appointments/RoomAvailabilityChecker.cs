@@ -14,6 +14,6 @@ public class RoomAvailabilityChecker:IRoomAvailabilityChecker
 
     public bool IsAvailable(AppointmentTime appointmentTime, Guid roomId)
     {
-        return _appointmentRepository.GetByRoomId(appointmentTime, roomId) == null;
+        return _appointmentRepository.GetConflictingAppointmentByRoomId(appointmentTime, roomId) == null;
     }
 }
