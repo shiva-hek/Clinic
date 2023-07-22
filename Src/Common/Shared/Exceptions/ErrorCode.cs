@@ -8,6 +8,9 @@
         public static ErrorCode IsEmpty(object propery) =>
             new ErrorCode("102", $"The {propery} must be provided.");
 
+        public static ErrorCode IsNotGuid(object propery) =>
+           new ErrorCode("103", $"The {propery} is invalid.");
+
         public static ErrorCode FirstnameLength =>
         new ErrorCode("201", "Maximum length of FirstName is 20 characters");
 

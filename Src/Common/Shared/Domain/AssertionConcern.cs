@@ -10,6 +10,11 @@ namespace Shared.Domain
             if (objValue is null)
                 ThrowException(errorCode);
         }
+        public static void AssertArgumentGuid(object objValue, ErrorCode errorCode)
+        {
+            if (objValue == null || objValue.Equals(Guid.Empty) || !Guid.TryParse(objValue.ToString(), out _))
+                ThrowException(errorCode);
+        }
 
         public static void AssertArgumentNotEmpty(string stringValue, ErrorCode errorCode)
         {
@@ -82,11 +87,6 @@ namespace Shared.Domain
                 throw new ApiException();
             else
                 throw new ApiException(errorCode);
-
-            //if (string.IsNullOrWhiteSpace(errorCode))
-            //    throw new InvalidOperationException();
-            //else
-            //    throw new InvalidOperationException(errorCode);
         }
     }
 }

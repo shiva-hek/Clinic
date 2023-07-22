@@ -37,8 +37,8 @@ namespace Domain.Models.Appointments.Entities
         )
         {
             AssertionConcern.AssertArgumentNotNull(appointmentTime, ErrorCode.IsNull(nameof(appointmentTime)));
-            AssertionConcern.AssertArgumentNotNull(doctorId, ErrorCode.IsNull(nameof(doctorId)));
-            AssertionConcern.AssertArgumentNotNull(patientId, ErrorCode.IsNull(nameof(patientId)));
+            AssertionConcern.AssertArgumentGuid(doctorId, ErrorCode.IsNotGuid(nameof(doctorId)));
+            AssertionConcern.AssertArgumentGuid(patientId, ErrorCode.IsNotGuid(nameof(patientId)));
 
             AssertionConcern.AssertRuleNotBroken(
                 new AppointmentMustBeInClinicWorkingHoursRule(appointmentTime, clinicTimeChecker));
@@ -97,17 +97,22 @@ namespace Domain.Models.Appointments.Entities
 
             AssertionConcern.AssertRuleNotBroken(
                 new AppointmentMustBeInClinicWorkingHoursRule(appointmentTime, clinicTimeChecker));
+
             AssertionConcern.AssertRuleNotBroken(
                 new AppointmentMustBeInDoctorWorkingHoursRule(appointmentTime, doctorId, doctorTimeChecker));
+
             AssertionConcern.AssertRuleNotBroken(
-                new APatientMustHaveMaximumTwoAppointmentsPerDayRule(patientId, appointmentTime,
-                    appointmentNumberChecker));
+                new APatientMustHaveMaximumTwoAppointmentsPerDayRule(patientId, appointmentTime,appointmentNumberChecker));
+
             AssertionConcern.AssertRuleNotBroken(
                 new AppointmentDurationMustBeValidRule(appointmentTime, doctorId, appointmentDurationChecker));
+
             AssertionConcern.AssertRuleNotBroken(new AppointmentsOfAPatientMustNotOverLapRule(appointmentTime,
                 patientId, appoitmentsOfPatientOverlapChecker));
+
             AssertionConcern.AssertRuleNotBroken(new DoctorMustBeAvailableRule(appointmentTime, doctorId,
                 doctorAvailabilityChecker));
+
             AssertionConcern.AssertRuleNotBroken(
                 new AppointmetMustNotOverlapRule(appointmentTime, appointmentOverlapChecker));
             

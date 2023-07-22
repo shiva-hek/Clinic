@@ -17,7 +17,7 @@ namespace Domain.Services.Appointments
             Doctor? doctor = _doctorRepository.Get(doctorId);
             DayOfWeek dayOfWeek = startTime.DayOfWeek;
 
-            WeeklyAvailability? availability =doctor!.Availabilities.FirstOrDefault(a => a.Day == dayOfWeek);
+            WeeklyAvailability? availability = doctor!.Availabilities.FirstOrDefault(a => a.Day == dayOfWeek);
 
             if (availability != null)
             {

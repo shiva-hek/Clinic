@@ -2,7 +2,7 @@
 
 namespace Domain.Services.Appointments;
 
-public interface IDoctorEmailAddressUniquenessChecker
+public interface IPatientEmailAddressUniquenessChecker
 {
     bool IsUnique(EmailAddress emailAddress);
 }
