@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.Appointments.Commands.CreateEarliestAppointment;
+using Application.Services;
 using Domain.Models.Appointments.Entities;
 using Domain.Models.Appointments.Factories;
 using Domain.Models.Appointments.Interfaces;
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace Application.Appointments.Commands.CreateAppointment;
 
-public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentRequest>
+public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentRequest, CreateAppointmentResultDto>
 {
     private readonly IIdService _idService;
     private readonly IAppointmentRepository _appointmentRepository;
@@ -23,7 +24,7 @@ public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointment
         _appointmentFactory = appointmentFactory;
     }
 
-    public async Task Handle(CreateAppointmentRequest request, CancellationToken cancellationToken)
+    public async Task<CreateAppointmentResultDto> Handle(CreateAppointmentRequest request, CancellationToken cancellationToken)
     {
         TimeSpan duration = TimeSpan.FromMinutes(request.DurationInMinutes);
 
@@ -35,5 +36,14 @@ public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointment
             patientId: request.PatientId);
 
         await _appointmentRepository.InsertAsync(appointment, cancellationToken);
+
+        CreateAppointmentResultDto resultDto = new CreateAppointmentResultDto
+        {
+            DoctorId = request.DoctorId,
+            PatientId = request.PatientId,
+            StartTime = request.StartTime
+        };
+
+        return resultDto;
     }
 }

@@ -17,11 +17,26 @@
     {
         public TModel Data { get; set; }
 
-        public ApiResponse(TModel data)
+        public ApiResponse()
             : base()
         {
-            Data = data;
+
         }
     }
+
+    //public class ApiResponse<TModel>
+    //{
+    //    public TModel Data { get; set; }
+
+    //    public List<Error> Errors { get; set; }
+
+    //    public bool Success =>
+    //        !(Errors.Count > 0);
+
+    //    public ApiResponse()
+    //    {
+    //        Errors = new List<Error>();
+    //    }
+    //}
 
 }

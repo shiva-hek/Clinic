@@ -22,11 +22,13 @@ namespace WebApi.Controllers
         [HttpPost("set-appointment")]
         public async Task<IActionResult> SetAppointment(CreateAppointmentRequest request)
         {
-            ApiResponse actionResult = new();
+            ApiResponse<CreateAppointmentResultDto> actionResult = new();
+
             try
             {
-                await _mediator.Send(request);
-                return Ok();
+                CreateAppointmentResultDto result = await _mediator.Send(request);
+                actionResult.Data = result;
+                return Ok(actionResult);
 
             }
             catch (ApiException ex)
@@ -44,11 +46,13 @@ namespace WebApi.Controllers
         [HttpPost("set-earliest-appointment")]
         public async Task<IActionResult> SetEarliestAppointment(CreateEarliestAppointmentRequest request)
         {
-            ApiResponse actionResult = new();
+            ApiResponse<CreateEarliestAppointmentResultDto> actionResult = new();
+
             try
             {
-                await _mediator.Send(request);
-                return Ok();
+                CreateEarliestAppointmentResultDto result = await _mediator.Send(request);
+                actionResult.Data = result;
+                return Ok(actionResult);
 
             }
             catch (ApiException ex)

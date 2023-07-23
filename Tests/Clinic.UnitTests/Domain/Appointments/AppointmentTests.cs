@@ -79,7 +79,7 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var appointment = new Appointment(
                 Id,
-                new AppointmentTime(DateTime.Now.AddMinutes(1), new TimeSpan(0, 15, 0)),
+                appointmentTime,
                 doctorId,
                 patientId,
                 roomId,
