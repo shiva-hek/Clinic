@@ -6,65 +6,63 @@ using Domain.Services.Appointments;
 using Moq;
 using Shared.Domain;
 using Shared.Exceptions;
-using System;
-using System.Collections.Generic;
 
 namespace Clinic.UnitTests.Domain.Appointments
 {
     public class AppointmentTests
     {
-        private Guid invalidId = Guid.Empty;
-        private Guid appointmentId = Guid.NewGuid();
-        private Guid doctorId = Guid.NewGuid();
-        private Guid patientId = Guid.NewGuid();
-        private Guid roomId = Guid.NewGuid();
+        private Guid _invalidId = Guid.Empty;
+        private Guid _appointmentId = Guid.NewGuid();
+        private Guid _doctorId = Guid.NewGuid();
+        private Guid _patientId = Guid.NewGuid();
+        private Guid _roomId = Guid.NewGuid();
 
 
-        private Mock<IClinicTimeChecker> clinicTimeCheckerMock;
-        private Mock<IDoctorTimeChecker> doctorTimeCheckerMock;
-        private Mock<IAppointmentNumberChecker> appointmentNumberCheckerMock;
-        private Mock<IAppointmentDurationChecker> appointmentDurationCheckerMock;
-        private Mock<IAppoitmentsOfPatientOverlapChecker> appoitmentsOfPatientOverlapCheckerMock;
-        private Mock<IDoctorAvailabilityChecker> doctorAvailabilityCheckerMock;
-        private Mock<IRoomAvailabilityChecker> roomAvailabilityCheckerMock;
-        private Mock<IAppointmentOverlapChecker> appointmentOverlapCheckerMock;
-        private Mock<IDoctorEmailAddressUniquenessChecker> doctorEmailAddressUniquenessChecker;
+        private Mock<IClinicTimeChecker> _clinicTimeCheckerMock;
+        private Mock<IDoctorTimeChecker> _doctorTimeCheckerMock;
+        private Mock<IAppointmentNumberChecker> _appointmentNumberCheckerMock;
+        private Mock<IAppointmentDurationChecker> _appointmentDurationCheckerMock;
+        private Mock<IAppoitmentsOfPatientOverlapChecker> _appoitmentsOfPatientOverlapCheckerMock;
+        private Mock<IDoctorAvailabilityChecker> _doctorAvailabilityCheckerMock;
+        private Mock<IRoomAvailabilityChecker> _roomAvailabilityCheckerMock;
+        private Mock<IAppointmentOverlapChecker> _appointmentOverlapCheckerMock;
+        private Mock<IDoctorEmailAddressUniquenessChecker> _doctorEmailAddressUniquenessChecker;
 
         public AppointmentTests()
         {
             // Set up mocks for dependencies
-            clinicTimeCheckerMock = new Mock<IClinicTimeChecker>();
-            doctorTimeCheckerMock = new Mock<IDoctorTimeChecker>();
-            appointmentNumberCheckerMock = new Mock<IAppointmentNumberChecker>();
-            appointmentDurationCheckerMock = new Mock<IAppointmentDurationChecker>();
-            appoitmentsOfPatientOverlapCheckerMock = new Mock<IAppoitmentsOfPatientOverlapChecker>();
-            doctorAvailabilityCheckerMock = new Mock<IDoctorAvailabilityChecker>();
-            roomAvailabilityCheckerMock = new Mock<IRoomAvailabilityChecker>();
-            appointmentOverlapCheckerMock = new Mock<IAppointmentOverlapChecker>();
-            doctorEmailAddressUniquenessChecker = new Mock<IDoctorEmailAddressUniquenessChecker>();
+            _clinicTimeCheckerMock = new Mock<IClinicTimeChecker>();
+            _doctorTimeCheckerMock = new Mock<IDoctorTimeChecker>();
+            _appointmentNumberCheckerMock = new Mock<IAppointmentNumberChecker>();
+            _appointmentDurationCheckerMock = new Mock<IAppointmentDurationChecker>();
+            _appoitmentsOfPatientOverlapCheckerMock = new Mock<IAppoitmentsOfPatientOverlapChecker>();
+            _doctorAvailabilityCheckerMock = new Mock<IDoctorAvailabilityChecker>();
+            _roomAvailabilityCheckerMock = new Mock<IRoomAvailabilityChecker>();
+            _appointmentOverlapCheckerMock = new Mock<IAppointmentOverlapChecker>();
+            _doctorEmailAddressUniquenessChecker = new Mock<IDoctorEmailAddressUniquenessChecker>();
 
             // Set up the mock for rules
-            clinicTimeCheckerMock.Setup(
+            _clinicTimeCheckerMock.Setup(
                     x => x.IsValid(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
 
-            doctorTimeCheckerMock.Setup(
+            _doctorTimeCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(true);
 
-            appointmentNumberCheckerMock.Setup(x => x.IsLessThanTwo(It.IsAny<Guid>(), It.IsAny<DateTime>())).Returns(true);
+            _appointmentNumberCheckerMock.Setup(x => x.IsLessThanTwo(It.IsAny<Guid>(), It.IsAny<DateTime>())).Returns(true);
 
-            appointmentDurationCheckerMock.Setup(
+            _appointmentDurationCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<Guid>(), It.IsAny<AppointmentTime>())).Returns(true);
 
-            appoitmentsOfPatientOverlapCheckerMock.Setup(
+            _appoitmentsOfPatientOverlapCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<Guid>(), It.IsAny<AppointmentTime>())).Returns(true);
 
-            doctorAvailabilityCheckerMock.Setup(
+            _doctorAvailabilityCheckerMock.Setup(
                 x => x.IsAvailable(It.IsAny<AppointmentTime>(), It.IsAny<Guid>())).Returns(true);
 
-            roomAvailabilityCheckerMock.Setup(
+            _roomAvailabilityCheckerMock.Setup(
                 x => x.IsAvailable(It.IsAny<AppointmentTime>(), It.IsAny<Guid>())).Returns(true);
 
-            appointmentOverlapCheckerMock.Setup(
+            _appointmentOverlapCheckerMock.Setup(
                 x => x.HasNoConflict(It.IsAny<AppointmentTime>())).Returns(true);
         }
 
@@ -74,23 +72,23 @@ namespace Clinic.UnitTests.Domain.Appointments
         {
             //Arrange
             AppointmentTime appointmentTime = new AppointmentTime(DateTime.Now.AddMinutes(1), new TimeSpan(0, 15, 0));
-            Guid Id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
 
             // Act
             var appointment = new Appointment(
-                Id,
+                id,
                 appointmentTime,
-                doctorId,
-                patientId,
-                roomId,
-                clinicTimeCheckerMock.Object,
-                doctorTimeCheckerMock.Object,
-                appointmentNumberCheckerMock.Object,
-                appointmentDurationCheckerMock.Object,
-                appoitmentsOfPatientOverlapCheckerMock.Object,
-                doctorAvailabilityCheckerMock.Object,
-                roomAvailabilityCheckerMock.Object,
-                appointmentOverlapCheckerMock.Object
+                _doctorId,
+                _patientId,
+                _roomId,
+                _clinicTimeCheckerMock.Object,
+                _doctorTimeCheckerMock.Object,
+                _appointmentNumberCheckerMock.Object,
+                _appointmentDurationCheckerMock.Object,
+                _appoitmentsOfPatientOverlapCheckerMock.Object,
+                _doctorAvailabilityCheckerMock.Object,
+                _roomAvailabilityCheckerMock.Object,
+                _appointmentOverlapCheckerMock.Object
             );
 
             // Assert
@@ -105,28 +103,28 @@ namespace Clinic.UnitTests.Domain.Appointments
 
             // Act
             var appointment = new Appointment(
-                appointmentId,
+                _appointmentId,
                 appointmentTime,
-                doctorId,
-                patientId,
-                roomId,
-                clinicTimeCheckerMock.Object,
-                doctorTimeCheckerMock.Object,
-                appointmentNumberCheckerMock.Object,
-                appointmentDurationCheckerMock.Object,
-                appoitmentsOfPatientOverlapCheckerMock.Object,
-                doctorAvailabilityCheckerMock.Object,
-                roomAvailabilityCheckerMock.Object,
-                appointmentOverlapCheckerMock.Object
+                _doctorId,
+                _patientId,
+                _roomId,
+                _clinicTimeCheckerMock.Object,
+                _doctorTimeCheckerMock.Object,
+                _appointmentNumberCheckerMock.Object,
+                _appointmentDurationCheckerMock.Object,
+                _appoitmentsOfPatientOverlapCheckerMock.Object,
+                _doctorAvailabilityCheckerMock.Object,
+                _roomAvailabilityCheckerMock.Object,
+                _appointmentOverlapCheckerMock.Object
             );
 
             // Assert
             Assert.NotNull(appointment);
-            Assert.Equal(appointmentId, appointment.Id);
+            Assert.Equal(_appointmentId, appointment.Id);
             Assert.Equal(appointmentTime, appointment.AppointmentTime);
-            Assert.Equal(doctorId, appointment.DoctorId);
-            Assert.Equal(patientId, appointment.PatientId);
-            Assert.Equal(roomId, appointment.RoomId);
+            Assert.Equal(_doctorId, appointment.DoctorId);
+            Assert.Equal(_patientId, appointment.PatientId);
+            Assert.Equal(_roomId, appointment.RoomId);
         }
 
         [Fact]
@@ -138,19 +136,19 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     null,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -167,19 +165,19 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     appointmentTime,
-                    invalidId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _invalidId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -196,19 +194,19 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     appointmentTime,
-                    doctorId,
-                    invalidId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorId,
+                    _invalidId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -220,26 +218,26 @@ namespace Clinic.UnitTests.Domain.Appointments
         public void Constructor_ShouldTrowException_WhenAppointmentTimeIsOutOfClinicworkingTime()
         {
             //Arrange
-            AppointmentTime OuOfRangeTime = new AppointmentTime(DateTime.Today.AddDays(1).Add(new TimeSpan(20, 0, 0)), new TimeSpan(0, 15, 0));
+            AppointmentTime ouOfRangeTime = new AppointmentTime(DateTime.Today.AddDays(1).Add(new TimeSpan(20, 0, 0)), new TimeSpan(0, 15, 0));
 
             IClinicTimeChecker clinicTimeChecker = new ClinicTimeChecker();
 
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
-                    OuOfRangeTime,
-                    doctorId,
-                    patientId,
-                    roomId,
+                    _appointmentId,
+                    ouOfRangeTime,
+                    _doctorId,
+                    _patientId,
+                    _roomId,
                     clinicTimeChecker,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -251,20 +249,20 @@ namespace Clinic.UnitTests.Domain.Appointments
         public void Constructor_ShouldTrowException_WhenAppointmentTimeIsOutOfDoctorworkingTime()
         {
             //Arrange
-            AppointmentTime OuOfRangeTime = new AppointmentTime(DateTime.Today.AddDays(1).Add(new TimeSpan(20, 0, 0)), new TimeSpan(0, 15, 0));
+            AppointmentTime ouOfRangeTime = new AppointmentTime(DateTime.Today.AddDays(1).Add(new TimeSpan(20, 0, 0)), new TimeSpan(0, 15, 0));
             EmailAddress doctorEmail = new EmailAddress("doctor1@gmail.com");
             Name doctorName = new Name("John", "Doe");
 
-            List<WeeklyAvailability> WeeklyAvailabilities = new List<WeeklyAvailability>
+            List<WeeklyAvailability> weeklyAvailabilities = new List<WeeklyAvailability>
             {
-                new WeeklyAvailability(doctorId, OuOfRangeTime.StartTime.DayOfWeek, new TimeSpan(9, 0, 0), new TimeSpan(12, 0, 0), Guid.NewGuid()),
-                new WeeklyAvailability(doctorId, DayOfWeek.Tuesday, new TimeSpan(8, 30, 0), new TimeSpan(12, 30, 0), Guid.NewGuid())
+                new WeeklyAvailability(_doctorId, ouOfRangeTime.StartTime.DayOfWeek, new TimeSpan(9, 0, 0), new TimeSpan(12, 0, 0), Guid.NewGuid()),
+                new WeeklyAvailability(_doctorId, DayOfWeek.Tuesday, new TimeSpan(8, 30, 0), new TimeSpan(12, 30, 0), Guid.NewGuid())
             };
 
-            doctorEmailAddressUniquenessChecker.Setup(
+            _doctorEmailAddressUniquenessChecker.Setup(
                 x => x.IsUnique(It.IsAny<EmailAddress>())).Returns(true);
 
-            Doctor doctor1 = new Doctor(Guid.NewGuid(), doctorName, DoctorType.General, WeeklyAvailabilities, doctorEmail, doctorEmailAddressUniquenessChecker.Object);
+            Doctor doctor1 = new Doctor(Guid.NewGuid(), doctorName, DoctorType.General, weeklyAvailabilities, doctorEmail, _doctorEmailAddressUniquenessChecker.Object);
 
             var mockRepository = new Mock<IDoctorRepository>();
             mockRepository.Setup(
@@ -275,19 +273,19 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
-                    OuOfRangeTime,
+                    _appointmentId,
+                    ouOfRangeTime,
                     doctor1.Id,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
                     doctorTimeChecker,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -303,26 +301,26 @@ namespace Clinic.UnitTests.Domain.Appointments
 
             var mockRepository = new Mock<IAppointmentRepository>();
             mockRepository.Setup(
-                repo => repo.Count(patientId, appointmentTime.StartTime)).Returns(2);
+                repo => repo.Count(_patientId, appointmentTime.StartTime)).Returns(2);
 
             IAppointmentNumberChecker appointmentNumberChecker = new AppointmentNumberChecker(mockRepository.Object);
 
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     appointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
                     appointmentNumberChecker,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -338,10 +336,10 @@ namespace Clinic.UnitTests.Domain.Appointments
             EmailAddress doctorEmail = new EmailAddress("doctor1@gmail.com");
             Name doctorName = new Name("John", "Doe");
 
-            doctorEmailAddressUniquenessChecker.Setup(
+            _doctorEmailAddressUniquenessChecker.Setup(
                 x => x.IsUnique(It.IsAny<EmailAddress>())).Returns(true);
 
-            Doctor doctor1 = new Doctor(Guid.NewGuid(), doctorName, DoctorType.General, new List<WeeklyAvailability>(), doctorEmail, doctorEmailAddressUniquenessChecker.Object);
+            Doctor doctor1 = new Doctor(Guid.NewGuid(), doctorName, DoctorType.General, new List<WeeklyAvailability>(), doctorEmail, _doctorEmailAddressUniquenessChecker.Object);
 
             var mockRepository = new Mock<IDoctorRepository>();
             mockRepository.Setup(
@@ -352,19 +350,19 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     appointmentTime,
                     doctor1.Id,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
                     appointmentDurationChecker,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -380,44 +378,44 @@ namespace Clinic.UnitTests.Domain.Appointments
             AppointmentTime seconAppointppointmentTime = new AppointmentTime(DateTime.Now.AddMinutes(10), new TimeSpan(0, 15, 0));
 
             Appointment appointment1 = new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     firstAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 );
 
             var mockRepository = new Mock<IAppointmentRepository>();
 
             mockRepository.Setup(
-                repo => repo.GetConflictingAppointmentByPatientId(seconAppointppointmentTime, patientId)).Returns(appointment1);
+                repo => repo.GetConflictingAppointmentByPatientId(seconAppointppointmentTime, _patientId)).Returns(appointment1);
 
             IAppoitmentsOfPatientOverlapChecker appoitmentsOfPatientOverlapChecker = new AppoitmentsOfPatientOverlapChecker(mockRepository.Object);
 
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     seconAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
                     appoitmentsOfPatientOverlapChecker,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 
@@ -432,44 +430,44 @@ namespace Clinic.UnitTests.Domain.Appointments
             AppointmentTime firstAppointppointmentTime = new AppointmentTime(DateTime.Now.AddMinutes(5), new TimeSpan(0, 15, 0));
             AppointmentTime seconAppointppointmentTime = new AppointmentTime(DateTime.Now.AddMinutes(10), new TimeSpan(0, 15, 0));
 
-            clinicTimeCheckerMock.Setup(
+            _clinicTimeCheckerMock.Setup(
                       x => x.IsValid(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
 
-            doctorTimeCheckerMock.Setup(
+            _doctorTimeCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<Guid>())).Returns(true);
 
-            appointmentNumberCheckerMock.Setup(
+            _appointmentNumberCheckerMock.Setup(
                 x => x.IsLessThanTwo(It.IsAny<Guid>(), It.IsAny<DateTime>())).Returns(true);
 
-            appointmentDurationCheckerMock.Setup(
+            _appointmentDurationCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<Guid>(), It.IsAny<AppointmentTime>())).Returns(true);
 
-            appoitmentsOfPatientOverlapCheckerMock.Setup(
+            _appoitmentsOfPatientOverlapCheckerMock.Setup(
                 x => x.IsValid(It.IsAny<Guid>(), It.IsAny<AppointmentTime>())).Returns(true);
 
-            doctorAvailabilityCheckerMock.Setup(
+            _doctorAvailabilityCheckerMock.Setup(
                 x => x.IsAvailable(It.IsAny<AppointmentTime>(), It.IsAny<Guid>())).Returns(true);
 
-            roomAvailabilityCheckerMock.Setup(
+            _roomAvailabilityCheckerMock.Setup(
                 x => x.IsAvailable(It.IsAny<AppointmentTime>(), It.IsAny<Guid>())).Returns(true);
 
-            appointmentOverlapCheckerMock.Setup(
+            _appointmentOverlapCheckerMock.Setup(
                 x => x.HasNoConflict(It.IsAny<AppointmentTime>())).Returns(true);
 
             Appointment appointment1 = new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     firstAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 );
 
             var mockRepository = new Mock<IAppointmentRepository>();
@@ -482,18 +480,18 @@ namespace Clinic.UnitTests.Domain.Appointments
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     seconAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
                     appointmentOverlapChecker
                 )
             );
@@ -510,44 +508,44 @@ namespace Clinic.UnitTests.Domain.Appointments
             AppointmentTime seconAppointppointmentTime = new AppointmentTime(DateTime.Now.AddMinutes(10), new TimeSpan(0, 15, 0));
 
             Appointment appointment1 = new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     firstAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
-                    doctorAvailabilityCheckerMock.Object,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorAvailabilityCheckerMock.Object,
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 );
 
             var mockRepository = new Mock<IAppointmentRepository>();
 
             mockRepository.Setup(
-                repo => repo.GetConflictingAppointmentByDoctorId(seconAppointppointmentTime, doctorId)).Returns(appointment1);
+                repo => repo.GetConflictingAppointmentByDoctorId(seconAppointppointmentTime, _doctorId)).Returns(appointment1);
 
             IDoctorAvailabilityChecker doctorAvailabilityChecker = new DoctorAvailabilityChecker(mockRepository.Object);
 
             // Act
             var exception = Assert.Throws<ApiException>(() =>
                 new Appointment(
-                    appointmentId,
+                    _appointmentId,
                     seconAppointppointmentTime,
-                    doctorId,
-                    patientId,
-                    roomId,
-                    clinicTimeCheckerMock.Object,
-                    doctorTimeCheckerMock.Object,
-                    appointmentNumberCheckerMock.Object,
-                    appointmentDurationCheckerMock.Object,
-                    appoitmentsOfPatientOverlapCheckerMock.Object,
+                    _doctorId,
+                    _patientId,
+                    _roomId,
+                    _clinicTimeCheckerMock.Object,
+                    _doctorTimeCheckerMock.Object,
+                    _appointmentNumberCheckerMock.Object,
+                    _appointmentDurationCheckerMock.Object,
+                    _appoitmentsOfPatientOverlapCheckerMock.Object,
                     doctorAvailabilityChecker,
-                    roomAvailabilityCheckerMock.Object,
-                    appointmentOverlapCheckerMock.Object
+                    _roomAvailabilityCheckerMock.Object,
+                    _appointmentOverlapCheckerMock.Object
                 )
             );
 

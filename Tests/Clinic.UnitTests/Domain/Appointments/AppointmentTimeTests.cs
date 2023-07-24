@@ -1,5 +1,4 @@
-﻿using Domain.Models.Appointments.Entities;
-using Domain.Models.Appointments.ValueObjects;
+﻿using Domain.Models.Appointments.ValueObjects;
 using Shared.Exceptions;
 
 namespace Clinic.UnitTests.Domain.Appointments

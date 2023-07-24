@@ -1,5 +1,4 @@
-﻿using Application.Appointments.Commands.CreateEarliestAppointment;
-using MediatR;
+﻿using MediatR;
 
 namespace Application.Appointments.Commands.CreateAppointment;
 

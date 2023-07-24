@@ -1,5 +1,4 @@
-﻿using Application.Appointments.Commands.CreateAppointment;
-using Application.Services;
+﻿using Application.Services;
 using Domain.Models.Appointments.Entities;
 using Domain.Models.Appointments.Factories;
 using Domain.Models.Appointments.Interfaces;
